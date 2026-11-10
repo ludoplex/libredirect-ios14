@@ -1,5 +1,10 @@
 <img src="./assets/libredirect_full.svg" height="50" />
 
+> **Fork: iPhone 7 / iOS 14 (Safari 14).** iOS 14 Safari has no extension API, so this fork runs
+> LibRedirect's redirect engine in a web page: paste, bookmarklet, or Share-Sheet Shortcut.
+> Page: https://ludoplex.github.io/libredirect-ios14/ — details in [ios14/README.md](ios14/README.md).
+> Upstream: [libredirect/browser_extension](https://github.com/libredirect/browser_extension).
+
 A browser extension that redirects YouTube, Twitter, TikTok, and other requests
 to alternative privacy-friendly frontends.
 

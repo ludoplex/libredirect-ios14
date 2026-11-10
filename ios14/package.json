@@ -1,0 +1,22 @@
+{
+  "name": "libredirect-ios14",
+  "private": true,
+  "type": "module",
+  "description": "LibRedirect redirect engine for iPhone 7 / iOS 14 Safari (Safari 14.0-14.1): no extension API needed",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "build": "node build.mjs",
+    "lint": "node build.mjs && eslint src build.mjs test dist/app.js",
+    "test": "node build.mjs && node --test --experimental-test-coverage --test-coverage-include=src/**/*.js --test-coverage-lines=80 \"test/*.test.js\"",
+    "check": "npm run lint && npm test"
+  },
+  "browserslist": [
+    "iOS >= 14"
+  ],
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "eslint": "9.39.1",
+    "eslint-plugin-compat": "6.0.2",
+    "globals": "16.5.0"
+  }
+}

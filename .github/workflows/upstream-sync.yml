@@ -1,0 +1,53 @@
+# Weekly upstream sync. Upstream LibRedirect released 69 versions 2022-01-27..2026-11-04;
+# since 2024 about one minor release every 4-8 months, with patch releases days later.
+# A weekly check catches each release and each config.json instance/service change.
+name: upstream-sync
+
+on:
+  schedule:
+    - cron: "17 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ios14
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 'lts/*'
+      - name: Merge upstream master into a sync branch, test, open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git remote add upstream https://github.com/libredirect/browser_extension.git
+          git fetch --tags upstream master
+          if git merge-base --is-ancestor upstream/master HEAD; then echo "up to date"; exit 0; fi
+          sha=$(git rev-parse --short upstream/master)
+          tag=$(git describe --tags --abbrev=0 upstream/master || echo none)
+          branch="sync/upstream-${sha}"
+          if git ls-remote --exit-code origin "refs/heads/${branch}" >/dev/null; then echo "branch exists"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "${branch}"
+          git merge --no-edit upstream/master
+          (cd ios14 && npm ci && npm run check)
+          git push origin "${branch}"
+          gh pr create --base ios14 --head "${branch}" \
+            --title "Sync upstream ${tag} (${sha})" \
+            --body "Automated weekly merge of libredirect/browser_extension master (${tag}, ${sha}). The iOS 14 build, compat lint (iOS >= 14) and tests passed in the sync job."
