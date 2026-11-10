@@ -366,11 +366,14 @@ function rewrite(url, originUrl, frontend, randomInstance, type) {
         else wiki = `/${wiki}`
         urlpath = url.pathname
       } else {
-        wiki = url.pathname.match(/(?<=wiki\/w:c:)[a-zA-Z0-9-]+(?=:)/)
+        // Capture groups instead of lookbehind: Safari < 16.4 (iOS 14/15) throws SyntaxError on (?<=...)
+        const wikiMatch = /wiki\/w:c:([a-zA-Z0-9-]+):/.exec(url.pathname)
+        wiki = wikiMatch && wikiMatch[1]
         if (!wiki) wiki = ""
         else {
           wiki = "/" + wiki + "/wiki/"
-          urlpath = url.pathname.match(/(?<=wiki\/w:c:[a-zA-Z0-9-]+:).+/)
+          const pathMatch = /wiki\/w:c:[a-zA-Z0-9-]+:(.+)/.exec(url.pathname)
+          urlpath = pathMatch && pathMatch[1]
         }
       }
       if (url.href.search(/Special:Search\?query/) > -1) {
