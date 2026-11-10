@@ -106,8 +106,20 @@ export const INSTANCE_LIST_URL = "https://raw.githubusercontent.com/libredirect/
 
 const isHttpsList = v => Array.isArray(v) && v.every(x => typeof x === "string" && /^https:\/\/[^\s/]+/.test(x))
 
+// Upstream "clearnet" lists include overlay-network hosts (for example inv.nadeko.ygg) that
+// stock Safari cannot resolve. A random pick of one gives a failed page load.
+const OVERLAY_TLD = /\.(ygg|i2p|onion|loki|bit)$/i
+const reachable = href => {
+  try {
+    return !OVERLAY_TLD.test(new URL(href).hostname)
+  } catch {
+    return false
+  }
+}
+
 /**
- * Keeps only { frontend: { clearnet: ["https://..."] } } entries; drops anything malformed.
+ * Keeps only { frontend: { clearnet: ["https://..."] } } entries; drops anything malformed
+ * and hosts on overlay networks.
  * @param {unknown} data parsed data.json
  * @returns {Record<string, string[]>}
  */
@@ -115,7 +127,9 @@ export function sanitizeInstanceList(data) {
   if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("instance list is not an object")
   const out = {}
   for (const [frontend, entry] of Object.entries(data)) {
-    if (entry && isHttpsList(entry.clearnet)) out[frontend] = entry.clearnet.slice()
+    if (!entry || !isHttpsList(entry.clearnet)) continue
+    const usable = entry.clearnet.filter(reachable)
+    if (usable.length) out[frontend] = usable
   }
   out.invidiousMusic = out.invidiousMusic || out.invidious
   return out

@@ -72,6 +72,10 @@ npm run check
 
 Output: `ios14/dist/index.html` and `ios14/dist/app.js`.
 
+Deploy: the `pages` job in `.github/workflows/ci.yml` publishes `ios14/dist` when Pages
+`build_type` is `workflow`. Until GitHub Actions jobs can run on this account, Pages serves the
+`gh-pages` branch, which holds a local `ios14/dist` build (each commit names its source commit).
+
 ## Upstream release cadence and sync
 
 From the GitHub releases API (read 2026-11-09): 69 releases from v1.2 (2022-01-27) to v3.5.1

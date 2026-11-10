@@ -104,6 +104,12 @@ test("sanitizeInstanceList: keeps https clearnet only, mirrors invidiousMusic, r
   assert.deepEqual(s.invidious, ["https://inv.example"])
   assert.deepEqual(s.invidiousMusic, ["https://inv.example"])
   assert.equal("bad" in s, false)
+  const overlay = sanitizeInstanceList({
+    invidious: { clearnet: ["https://inv.nadeko.net", "https://inv.nadeko.ygg", "https://x.i2p"] },
+    onlyOverlay: { clearnet: ["https://a.onion"] },
+  })
+  assert.deepEqual(overlay.invidious, ["https://inv.nadeko.net"])
+  assert.equal("onlyOverlay" in overlay, false)
   assert.throws(() => sanitizeInstanceList(null), /not an object/)
   assert.throws(() => sanitizeInstanceList([1]), /not an object/)
 })
