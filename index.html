@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="no-referrer" />
+    <title>LibRedirect iOS 14</title>
+    <style>
+      :root { --text: #000; --bg: #fff; --bg2: #e4e4e4; --active: #fb9817; }
+      @media (prefers-color-scheme: dark) { :root { --text: #fff; --bg: #121212; --bg2: #202020; --active: #fbc117; } }
+      body { margin: 0; padding: 16px; font: 16px/1.4 -apple-system, system-ui, sans-serif; color: var(--text); background: var(--bg); }
+      main { max-width: 640px; margin: 0 auto; }
+      h1 { font-size: 22px; margin: 0 0 4px; }
+      h2 { font-size: 18px; margin: 24px 0 8px; }
+      form { display: flex; gap: 8px; }
+      input[type="url"], input[type="text"] { flex: 1; min-width: 0; font-size: 16px; padding: 10px; border: 1px solid var(--bg2); border-radius: 8px; background: var(--bg); color: var(--text); }
+      button { font-size: 16px; padding: 10px 14px; border: 0; border-radius: 8px; background: var(--active); color: #000; }
+      #result { margin-top: 12px; padding: 12px; border-radius: 8px; background: var(--bg2); word-break: break-all; min-height: 1.4em; }
+      a { color: var(--active); }
+      code { display: block; padding: 8px; background: var(--bg2); border-radius: 6px; word-break: break-all; font-size: 13px; }
+      .svc { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--bg2); }
+      .svc span { flex: 1; }
+      .svc select { max-width: 45%; font-size: 15px; }
+      ol { padding-left: 20px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>LibRedirect for iOS 14</h1>
+      <p>Turns YouTube, Reddit, X, TikTok and other links into privacy front-end links. Runs in Safari 14 on an iPhone 7. No extension, no account.</p>
+
+      <form id="form">
+        <input id="input" type="text" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Paste a link" aria-label="Link to convert" />
+        <button type="submit">Convert</button>
+      </form>
+      <div id="result" aria-live="polite"></div>
+
+      <h2>Bookmarklet (redirect the page you are on)</h2>
+      <ol>
+        <li>Bookmark this page (Share, Add Bookmark).</li>
+        <li>Edit that bookmark and replace its address with the code below.</li>
+        <li>On a YouTube or Reddit page, open Bookmarks and tap it.</li>
+      </ol>
+      <p><a id="bookmarklet" href="#">LibRedirect</a></p>
+      <code id="bookmarklet-code"></code>
+
+      <h2>Shortcut (convert a link before you open it)</h2>
+      <ol>
+        <li>Shortcuts app, new shortcut. Turn on "Show in Share Sheet", accept URLs.</li>
+        <li>Add "URL Encode" with the Shortcut Input.</li>
+        <li>Add "Text": the address below, then the URL Encode result.</li>
+        <li>Add "Open URLs" with that Text.</li>
+      </ol>
+      <code id="shortcut-url"></code>
+
+      <h2>Services</h2>
+      <p><button id="reload-instances" type="button">Reload instance list</button> <span id="instances-status"></span></p>
+      <div id="services"></div>
+
+      <p><small>Settings stay in this browser (localStorage). Source: <a href="https://github.com/ludoplex/libredirect-ios14">ludoplex/libredirect-ios14</a>, a fork of <a href="https://github.com/libredirect/browser_extension">LibRedirect</a> (GPL-3.0).</small></p>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
